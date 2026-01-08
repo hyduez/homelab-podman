@@ -1,0 +1,10 @@
+services:
+  cloudflared:
+    image: cloudflare/cloudflared:latest
+    container_name: cloudflared
+    restart: unless-stopped
+    environment:
+      - TUNNEL_TOKEN
+    command: tunnel --no-autoupdate run
+    extra_hosts:
+      - "host.containers.internal:host-gateway"
