@@ -25,18 +25,6 @@ services:
     extra_hosts:
       - "host.containers.internal:host-gateway"
 
-  loki:
-    container_name: loki
-    image: grafana/loki:latest
-    ports:
-      - "3100:3100"
-    volumes:
-      - ./data/loki:/loki:Z,U
-      - ./loki.yaml:/etc/loki/loki.yaml:Z
-    command:
-      - '-config.file=/etc/loki/loki.yaml'
-    restart: unless-stopped
-
   node_exporter:
     image: quay.io/prometheus/node-exporter:latest
     container_name: node-exporter
