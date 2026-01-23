@@ -1,4 +1,1 @@
-<img width="1880" height="1005" alt="image" src="https://github.com/user-attachments/assets/b6389162-442d-458a-b779-84dc5074b413" />
-
-Grafana Dashboard ID to import: 1860
-You have to add Prometheus as Data Source, as well as Loki
+<img width="3283" height="2234" alt="Untitled-2026-01-15-0123" src="https://github.com/user-attachments/assets/6a7ab383-f756-406e-ba33-a00af609d5cc" />
