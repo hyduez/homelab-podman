@@ -4,7 +4,7 @@ model_list:
   - model_name: qwen2.5-coder-1.5b
     litellm_params:
       model: ollama/qwen2.5-coder:1.5b
-      api_base: http://host.containers.internal:11434
+      api_base: http://10.89.6.11:11434
 
   # Google AI Studio
 

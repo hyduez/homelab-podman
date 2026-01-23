@@ -9,8 +9,6 @@ services:
       - POSTGRES_DB
     volumes:
       - ./data/postgres:/var/lib/postgresql/MAJOR/docker:Z,U
-    ports:
-      - "5432:5432"
     networks:
       litellm-network:
         ipv4_address: 10.89.6.10
@@ -23,8 +21,6 @@ services:
       - "nvidia.com/gpu=all"
     volumes:
       - ./data/ollama:/root/.ollama:Z,U
-    ports:
-      - "11434:11434"
     networks:
       litellm-network:
         ipv4_address: 10.89.6.11

@@ -9,12 +9,15 @@ services:
     volumes:
       - ./data/grafana:/var/lib/grafana:Z,U
     restart: unless-stopped
+    dependes_on:
+      - prometheus
+    networks:
+      grafana-network:
+        ipv4_address: 10.86.6.11
 
   prometheus:
     container_name: prometheus
     image: prom/prometheus:latest
-    ports:
-      - "9090:9090"
     volumes:
       - ./data/prometheus:/prometheus/data:Z,U
       - ./prometheus.yml:/etc/prometheus/prometheus.yml:Z
@@ -25,12 +28,14 @@ services:
     restart: unless-stopped
     extra_hosts:
       - "host.containers.internal:host-gateway"
+    networks:
+      grafana-network:
+        ipv4_address: 10.86.6.10
 
   node_exporter:
     image: quay.io/prometheus/node-exporter:latest
     container_name: node-exporter
     restart: always
-    network_mode: "host"
     pid: "host"
     volumes:
       - "/:/host:ro,rslave"
@@ -45,3 +50,10 @@ services:
       - '--collector.netdev'
     security_opt:
       - label=disable
+    networks:
+      grafana-network:
+        ipv4_address: 10.86.6.12
+
+networks:
+  grafana-network:
+    external: true
