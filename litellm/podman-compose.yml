@@ -1,4 +1,20 @@
 services:
+  database:
+    image: postgres
+    container_name: litellm-database
+    restart: always
+    environment:
+      - POSTGRES_USER
+      - POSTGRES_PASSWORD
+      - POSTGRES_DB
+    volumes:
+      - ./data/postgres:/var/lib/postgresql/MAJOR/docker:Z,U
+    ports:
+      - "5432:5432"
+    networks:
+      litellm-network:
+        ipv4_address: 10.89.6.10
+
   ollama:
     image: docker.io/ollama/ollama:latest
     container_name: ollama
@@ -9,6 +25,9 @@ services:
       - ./data/ollama:/root/.ollama:Z,U
     ports:
       - "11434:11434"
+    networks:
+      litellm-network:
+        ipv4_address: 10.89.6.11
 
   litellm:
     image: ghcr.io/berriai/litellm:main-latest
@@ -17,6 +36,10 @@ services:
     environment:
       - GEMINI_API_KEY
       - GROQ_API_KEY
+      - DATABASE_URL
+      - LITELLM_MASTER_KEY
+      - LITELLM_SALT_KEY
+      - LITELLM_LOG
     ports:
       - "4000:4000"
     volumes:
@@ -24,3 +47,11 @@ services:
     command: [ "--config", "/app/config.yaml", "--port", "4000" ]
     depends_on:
       - ollama
+      - database
+    networks:
+      litellm-network:
+        ipv4_address: 10.89.6.12
+
+networks:
+  litellm-network:
+    external: true
