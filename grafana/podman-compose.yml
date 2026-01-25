@@ -36,7 +36,7 @@ services:
     image: quay.io/prometheus/node-exporter:latest
     container_name: node-exporter
     restart: always
-    pid: "host"
+    pid: host
     volumes:
       - "/:/host:ro,rslave"
       - "/sys:/host/sys:ro,rslave"

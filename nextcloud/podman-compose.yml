@@ -1,0 +1,44 @@
+services:
+  database:
+    image: postgres:alpine
+    container_name: nextcloud-database
+    restart: always
+    volumes:
+      - ./data/postgres:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB
+      - POSTGRES_USER
+      - POSTGRES_PASSWORD
+    networks:
+      nextcloud-network:
+        ipv4_address: 10.83.6.10
+
+  nextcloud:
+    image: nextcloud
+    container_name: nextcloud
+    restart: always
+    depends_on:
+      - database
+    ports:
+      - 3002:80
+    volumes:
+      - ./data/nextcloud:/var/www/html:Z,U
+    environment:
+      - POSTGRES_HOST
+      - POSTGRES_DB
+      - POSTGRES_USER
+      - POSTGRES_PASSWORD
+      - NEXTCLOUD_ADMIN_PASSWORD
+      - NEXTCLOUD_ADMIN_USER
+      - NEXTCLOUD_TRUSTED_DOMAINS
+    networks:
+      nextcloud-network:
+        ipv4_address: 10.83.6.11
+
+volumes:
+  nextcloud:
+  database:
+
+networks:
+  nextcloud-network:
+    external: true
