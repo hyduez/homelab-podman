@@ -1,6 +1,6 @@
 services:
   database:
-    image: postgres
+    image: docker.io/library/postgres:latest
     container_name: litellm-database
     restart: always
     environment:

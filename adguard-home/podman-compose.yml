@@ -1,8 +1,6 @@
-version: "3.8"
-
 services:
-  agh:
-    image: adguard/adguardhome:latest
+  adguard-home:
+    image: docker.io/adguard/adguardhome:latest
     container_name: adguard-home
     restart: unless-stopped
     cap_add:

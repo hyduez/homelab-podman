@@ -1,7 +1,7 @@
 services:
   mc:
     container_name: mc-gtnh
-    image: itzg/minecraft-server:java8
+    image: docker.io/itzg/minecraft-server:java8
     tty: true
     stdin_open: true
     ports:

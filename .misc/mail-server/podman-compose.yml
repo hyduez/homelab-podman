@@ -1,8 +1,6 @@
-version: "3.9"
-
 services:
   database:
-    image: mariadb:10.5
+    image: docker.io/library/mariadb:10.5
     container_name: mailserver-database
     restart: unless-stopped
     environment:
@@ -15,7 +13,7 @@ services:
         ipv4_address: 10.89.6.10
 
   postfix:
-    image: technicalguru/mailserver-postfix
+    image: docker.io/technicalguru/mailserver-postfix
     container_name: mailserver-postfix
     restart: unless-stopped
     networks:
@@ -45,7 +43,7 @@ services:
       - ./data/postfix:/var/mail:Z
 
   opendkim:
-    image: technicalguru/mailserver-opendkim
+    image: docker.io/technicalguru/mailserver-opendkim
     container_name: mailserver-opendkim
     restart: unless-stopped
     networks:
@@ -62,7 +60,7 @@ services:
       - ./data/opendkim:/etc/opendkim:Z
 
   postfixadmin:
-    image: technicalguru/mailserver-postfixadmin:latest
+    image: docker.io/technicalguru/mailserver-postfixadmin:latest
     container_name: mailserver-postfixadmin
     restart: unless-stopped
     networks:
@@ -81,7 +79,7 @@ services:
       PFA_WEBMASTER_EMAIL: ${PFA_WEBMASTER_EMAIL}
 
   roundcube:
-    image: technicalguru/mailserver-roundcube
+    image: docker.io/technicalguru/mailserver-roundcube
     container_name: mailserver-roundcube
     restart: unless-stopped
     networks:

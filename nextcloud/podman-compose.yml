@@ -1,6 +1,6 @@
 services:
   database:
-    image: postgres:alpine
+    image: docker.io/library/postgres:alpine
     container_name: nextcloud-database
     restart: always
     volumes:
@@ -14,7 +14,7 @@ services:
         ipv4_address: 10.83.6.10
 
   redis:
-    image: redis
+    image: docker.io/library/redis
     container_name: nextcloud-redis
     restart: always
     networks:
@@ -22,7 +22,7 @@ services:
         ipv4_address: 10.83.6.11
 
   nextcloud:
-    image: nextcloud
+    image: docker.io/library/nextcloud
     container_name: nextcloud
     restart: always
     depends_on:
