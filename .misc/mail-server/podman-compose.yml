@@ -1,100 +1,29 @@
 services:
-  database:
-    image: docker.io/library/mariadb:10.5
-    container_name: mailserver-database
-    restart: unless-stopped
-    environment:
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
-    volumes:
-      - ./data/db:/var/lib/mysql:Z
-      - ./mariadb/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d:Z
-    networks:
-      mail-network:
-        ipv4_address: 10.89.6.10
-
-  postfix:
-    image: docker.io/technicalguru/mailserver-postfix
-    container_name: mailserver-postfix
-    restart: unless-stopped
-    networks:
-      mail-network:
-        ipv4_address: 10.89.6.11
+  mailserver:
+    image: ghcr.io/docker-mailserver/docker-mailserver:latest
+    container_name: mailserver
+    hostname: mail.example.com
+    env_file: mailserver.env
+    # More information about the mail-server ports:
+    # https://docker-mailserver.github.io/docker-mailserver/latest/config/security/understanding-the-ports/
     ports:
-      - "25:25"
-      - "143:143"
-      - "465:465"
-      - "587:587"
-      - "993:993"
-    environment:
-      MYSQL_HOST: 10.89.6.10
-      MYSQL_DATABASE: postfix
-      MYSQL_USER: postfix
-      MYSQL_PASSWORD: ${PF_DB_PASS}
-      PF_DB_HOST: 10.89.6.10
-      PF_DB_NAME: ${PF_DB_NAME}
-      PF_DB_USER: ${PF_DB_USER}
-      PF_DB_PASS: ${PF_DB_PASS}
-      PF_SETUP_PASS: ${PF_SETUP_PASS}
-      PF_MYDOMAIN: ${PF_MYDOMAIN}
-      PF_MYHOSTNAME: ${PF_MYHOSTNAME}
-      PF_DKIM_SERVICE_NAME: 10.89.6.14
-      PF_DKIM_SERVICE_PORT: 8891
+      - "25:25"    # SMTP  (explicit TLS => STARTTLS, Authentication is DISABLED => use port 465/587 instead)
+      - "143:143"  # IMAP4 (explicit TLS => STARTTLS)
+      - "465:465"  # ESMTP (implicit TLS)
+      - "587:587"  # ESMTP (explicit TLS => STARTTLS)
+      - "993:993"  # IMAP4 (implicit TLS)
     volumes:
-      - ./data/postfix:/var/mail:Z
-
-  opendkim:
-    image: docker.io/technicalguru/mailserver-opendkim
-    container_name: mailserver-opendkim
-    restart: unless-stopped
-    networks:
-      mail-network:
-        ipv4_address: 10.89.6.14
-    environment:
-      DKIM_DB_HOST: 10.89.6.10
-      DKIM_DB_NAME: ${DKIM_DB_NAME}
-      DKIM_DB_USER: ${DKIM_DB_USER}
-      DKIM_DB_PASS: ${DKIM_DB_PASS}
-      DKIM_SETUP_PASS: ${DKIM_SETUP_PASS}
-      DKIM_DOMAIN: ${DKIM_DOMAIN}
-    volumes:
-      - ./data/opendkim:/etc/opendkim:Z
-
-  postfixadmin:
-    image: docker.io/technicalguru/mailserver-postfixadmin:latest
-    container_name: mailserver-postfixadmin
-    restart: unless-stopped
-    networks:
-      mail-network:
-        ipv4_address: 10.89.6.12
-    environment:
-      PFA_DB_HOST: 10.89.6.10
-      PFA_DB_USER: ${PFA_DB_USER}
-      PFA_DB_PASS: ${PFA_DB_PASS}
-      PFA_DB_NAME: ${PFA_DB_NAME}
-      PFA_SETUP_PASS: ${PFA_SETUP_PASS}
-      PFA_POSTFIX_SERVER: 10.89.6.11
-      PFA_ABUSE_EMAIL: ${PFA_ABUSE_EMAIL}
-      PFA_HOSTMASTER_EMAIL: ${PFA_HOSTMASTER_EMAIL}
-      PFA_POSTMASTER_EMAIL: ${PFA_POSTMASTER_EMAIL}
-      PFA_WEBMASTER_EMAIL: ${PFA_WEBMASTER_EMAIL}
-
-  roundcube:
-    image: docker.io/technicalguru/mailserver-roundcube
-    container_name: mailserver-roundcube
-    restart: unless-stopped
-    networks:
-      mail-network:
-        ipv4_address: 10.89.6.13
-    environment:
-      RC_DB_USER: ${RC_DB_USER}
-      RC_DB_HOST: 10.89.6.10
-      RC_DB_PASS: ${RC_DB_PASS}
-      RC_DB_NAME: ${RC_DB_NAME}
-      RC_DES_KEY: ${RC_DES_KEY}
-      RC_IMAP_SERVER_NAME: 10.89.6.11
-      RC_SMTP_SERVER_NAME: 10.89.6.11
-      RC_DEFAULT_DOMAIN: ${RC_DEFAULT_DOMAIN}
-
-networks:
-  mail-network:
-    external: true
+      - ./data/dms/mail-data/:/var/mail/
+      - ./data/dms/mail-state/:/var/mail-state/
+      - ./data/dms/mail-logs/:/var/log/mail/
+      - ./data/dms/config/:/tmp/docker-mailserver/
+      - /etc/localtime:/etc/localtime:ro
+    restart: always
+    stop_grace_period: 1m
+    # Uncomment if using `ENABLE_FAIL2BAN=1`:
+    # cap_add:
+    #  - NET_ADMIN
+    # healthcheck:
+    # test: "ss --listening --ipv4 --tcp | grep --silent ':smtp' || exit 1"
+    # timeout: 3s
+    # retries: 0
