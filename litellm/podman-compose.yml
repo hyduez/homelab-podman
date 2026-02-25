@@ -1,6 +1,6 @@
 services:
   database:
-    image: docker.io/library/postgres:latest
+    image: docker.io/library/postgres:alpine
     container_name: litellm-database
     restart: always
     environment:
@@ -8,7 +8,7 @@ services:
       - POSTGRES_PASSWORD
       - POSTGRES_DB
     volumes:
-      - ./data/postgres:/var/lib/postgresql/MAJOR/docker:Z,U
+      - ./data/postgres:/var/lib/postgresql/data:Z,U
     networks:
       litellm-network:
         ipv4_address: 10.89.6.10

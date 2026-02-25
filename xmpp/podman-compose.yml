@@ -20,14 +20,14 @@ services:
   
   postgres:
     container_name: xmpp-database
-    image: docker.io/library/postgres
+    image: docker.io/library/postgres:alpine
     restart: unless-stopped
     environment:
       - POSTGRES_USER
       - POSTGRES_PASSWORD
       - POSTGRES_DB
     volumes:
-      - ./data/postgres:/var/lib/postgresql/MAJOR/docker:Z,U
+      - ./data/postgres:/var/lib/postgresql/data:Z,U
     networks:
       xmpp-network:
         ipv4_address: 10.62.6.10

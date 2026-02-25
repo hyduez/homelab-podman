@@ -1,0 +1,13 @@
+version: '3.7'
+services:
+  kener:
+    image: docker.io/rajnandan1/kener:latest
+    container_name: kener
+    environment:
+      - TZ
+      - KENER_SECRET_KEY
+      - ORIGIN
+    ports:
+      - 3004:3000
+    volumes:
+      - ./data/kener:/config:Z,U

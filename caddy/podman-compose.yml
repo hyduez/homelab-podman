@@ -7,11 +7,11 @@ services:
       - "80:80"
       - "443:443"
     volumes:
-      - /opt/Caddyfile:/etc/caddy/Caddyfile:Z
+      - /opt/caddy/Caddyfile:/etc/caddy/Caddyfile:Z
       # - ./Caddyfile:/etc/caddy/Caddyfile:Z
       - ./data/caddy:/data:Z,U
       - ./config/caddy:/config:Z,U
-      - ./www:/var/www/html:Z,U
+      - /opt/caddy/www:/var/www/html:ro
     extra_hosts:
       - "host.containers.internal:host-gateway"
 
