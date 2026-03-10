@@ -4,13 +4,11 @@ services:
     container_name: caddy
     restart: unless-stopped
     ports:
-      - "80:80"
-      - "443:443"
+      - 80:80
+      - 443:443
     volumes:
-      - /opt/caddy/Caddyfile:/etc/caddy/Caddyfile:Z
-      # - ./Caddyfile:/etc/caddy/Caddyfile:Z
+      - /opt/caddy:/etc/caddy:Z,U
       - ./data/caddy:/data:Z,U
       - ./config/caddy:/config:Z,U
-      - /opt/caddy/www:/var/www/html:ro
     extra_hosts:
       - "host.containers.internal:host-gateway"
